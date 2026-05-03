@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEK - Bejelentkezés</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <div class="visual-side"></div>
+
+    <div class="form-side">
+      <div class="form-box">
+        <h1>Bejelentkezés</h1>
+        <p>Add meg a belépési adataidat</p>
+
+        <form id="loginForm" autocomplete="off">
+          <div class="field">
+            <label for="username">Felhasználónév</label>
+            <input type="text" id="username" name="username" placeholder="Felhasználónév" required>
+          </div>
+
+          <div class="field">
+            <label for="password">Jelszó</label>
+            <input type="password" id="password" name="password" placeholder="Jelszó" required>
+          </div>
+
+          <button type="submit" class="submit-btn" id="loginBtn">Bejelentkezés</button>
+        </form>
+
+        <div class="footer-note">
+          <a href="register.html">Regisztráció</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://lsbdbfzeugqnurkmdhxh.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_GrhobqQt4uN4Cl5G9t1YmQ_KCKw-wFP";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function syntheticEmail(username) {
+  return username
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "") + "@tek.hu";
+}
+
+      async function getProfileByUserId(userId) {
+    const { data, error } = await sb
+      .from("profiles")
+      .select("id, username, email, is_admin, must_change_password")
+      .eq("id", userId)
+      .maybeSingle();
+
+    console.log("PROFILE userId:", userId);
+    console.log("PROFILE data:", data);
+    console.log("PROFILE error:", error);
+
+    if (error) {
+      alert(
+        "Profil hiba:\n" +
+        "message: " + (error.message || "-") + "\n" +
+        "code: " + (error.code || "-") + "\n" +
+        "details: " + (error.details || "-")
+      );
+      return null;
+    }
+
+    if (!data) {
+      alert("Nincs profiles rekord ehhez a felhasználóhoz.");
+      return null;
+    }
+
+    return data;
+  }
+
+    async function redirectByProfile(profile) {
+      if (!profile) return;
+
+      if (profile.must_change_password) {
+        window.location.href = "change-password.html";
+        return;
+      }
+
+      if (profile.is_admin) {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "fooldal.html";
+      }
+    }
+
+    async function redirectIfAlreadyLoggedIn() {
+      const { data, error } = await sb.auth.getUser();
+
+      if (error || !data?.user) return;
+
+      const profile = await getProfileByUserId(data.user.id);
+      await redirectByProfile(profile);
+    }
+
+    async function loginByUsername(username, password) {
+      const email = syntheticEmail(username);
+
+      const { error: signInError } = await sb.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (signInError) {
+        console.error("Bejelentkezési hiba:", signInError);
+        alert("Hibás felhasználónév vagy jelszó, vagy a regisztráció még nincs jóváhagyva.");
+        return false;
+      }
+
+      const { data: userData, error: userError } = await sb.auth.getUser();
+
+      if (userError || !userData?.user?.id) {
+        console.error("Felhasználó lekérési hiba:", userError);
+        alert("Nem sikerült beolvasni a felhasználót.");
+        return false;
+      }
+
+      const profile = await getProfileByUserId(userData.user.id);
+
+      if (!profile) {
+        alert("Nem sikerült betölteni a profilt.");
+        return false;
+      }
+
+      await redirectByProfile(profile);
+      return true;
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const loginBtn = document.getElementById("loginBtn");
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!username || !password) {
+    alert("Tölts ki minden mezőt.");
+    return;
+  }
+
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Belépés...";
+
+  try {
+    await loginByUsername(username, password);
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Bejelentkezés";
+  }
+});
+
+sb.auth.signOut();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEK - Főoldal</title>
+  <link rel="stylesheet" href="fooldal.css">
+</head>
+<body>
+ <header class="top-menu">
+  <nav class="menu-row" id="topMenu">
+    <button type="button" class="menu-item active" data-page="attekintes">Áttekintés</button>
+    <button type="button" class="menu-item" data-page="allomanytabla">Állománytábla</button>
+    <button type="button" class="menu-item" data-page="szolgalati-ido">Szolgálati idő</button>
+    <button type="button" class="menu-item" data-page="jelentesek">Jelentések</button>
+    <button type="button" class="menu-item" data-page="jarmu-igenyles">Jármű igénylés</button>
+    <button type="button" class="menu-item" data-page="ugyintezesek">Ügyintézések</button>
+  </nav>
+
+  <a href="index.html" class="logout-btn" id="logoutBtn">Kijelentkezés</a>
+</header>
+
+  <main class="content">
+
+    <section id="attekintes" class="page active-page">
+      <div class="page-header">
+        <div>
+          <p class="section-kicker">Dolgozói felület</p>
+          <h1>Áttekintés</h1>
+          <p class="section-subtext">A saját felhasználói adataid.</p>
+        </div>
+      </div>
+
+      <div class="overview-grid">
+        <div class="info-card">
+          <span class="info-label">Név</span>
+          <strong class="info-value" id="profileFullName">Teszt Elek</strong>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Kompetencia</span>
+          <strong class="info-value" id="profileRank">Őrmester</strong>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Azonosító</span>
+          <strong class="info-value" id="profileEmployeeId">TEK-024</strong>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Beosztás</span>
+          <strong class="info-value" id="profilePosition">Műveleti egység</strong>
+        </div>
+
+        <div class="info-card stat-positive">
+          <span class="info-label">Pluszpont</span>
+          <strong class="info-value" id="profilePlusPoints">12</strong>
+        </div>
+
+        <div class="info-card stat-negative">
+          <span class="info-label">Hibapont</span>
+          <strong class="info-value" id="profilePenaltyPoints">2</strong>
+        </div>
+
+        <div class="info-card info-card-wide">
+          <span class="info-label">Kitüntetések</span>
+          <strong class="info-value" id="profileAwards">Kiemelt szolgálat, Példamutató fellépés</strong>
+        </div>
+
+        <div class="info-card stat-total">
+          <span class="info-label">Pontok</span>
+          <strong class="info-value" id="profileTotalPoints">34</strong>
+        </div>
+      </div>
+    </section>
+
+    <section id="allomanytabla" class="page">
+      <div class="page-header">
+        <div>
+          <p class="section-kicker">Dolgozói felület</p>
+          <h1>Állománytábla</h1>
+          <p class="section-subtext">Az összes felhasználó listája kompetencia sorrendben.</p>
+        </div>
+      </div>
+
+      <div class="staff-panel">
+        <div class="staff-toolbar">
+          <input type="text" id="staffSearch" class="staff-search" placeholder="Keresés név, kompetencia vagy azonosító alapján">
+        </div>
+
+        <div class="staff-list" id="staffList"></div>
+      </div>
+    </section>
+
+    <section id="szolgalati-ido" class="page">
+      <div class="page-header">
+        <div>
+          <p class="section-kicker">Dolgozói felület</p>
+          <h1>Szolgálati idő</h1>
+          <p class="section-subtext">A heti szolgálati percek és leadások kezelése.</p>
+        </div>
+      </div>
+
+      <div class="service-container">
+        <div class="service-card">
+          <h2>Szolgálati idő</h2>
+
+          <div class="service-timer" id="timer">00:00:00</div>
+
+          <div class="service-buttons">
+            <button id="startBtn" class="btn-start" type="button">Szolgálat indítása</button>
+            <button id="stopBtn" class="btn-stop" type="button" disabled>Szolgálat leállítása</button>
+          </div>
+
+          <div class="service-summary">
+            <p>Heti összes szolgálati idő:</p>
+            <strong id="weeklyTime">0 perc</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="jelentesek" class="page">
+      <div class="page-header">
+        <div>
+          <p class="section-kicker">Dolgozói felület</p>
+          <h1>Jelentések</h1>
+          <p class="section-subtext">Különböző jelentések beküldése és nyomon követése.</p>
+        </div>
+      </div>
+
+      <div class="reports-layout">
+        <div class="report-form-card">
+          <h2>Új jelentés leadása</h2>
+
+          <div class="form-group">
+            <label>Jelentés típusa</label>
+            <div class="custom-select" id="reportTypeSelect">
+              <button type="button" class="custom-select-trigger" id="reportTypeTrigger">
+                <span id="reportTypeLabel">Válassz jelentéstípust</span>
+                <span class="custom-select-arrow">⌄</span>
+              </button>
+
+              <div class="custom-select-menu" id="reportTypeMenu">
+                <button type="button" class="custom-option" data-value="intezkedesi">Ellátási jelentés</button>
+                <button type="button" class="custom-option" data-value="szolgalati">Baleseti betétlap</button>
+                <button type="button" class="custom-option" data-value="esemeny">Tankolás jelentés</button>
+                <button type="button" class="custom-option" data-value="kulon">Egyéb jelentés</button>
+              </div>
+
+              <input type="hidden" id="reportType" value="">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reportDescription">Leírás</label>
+            <textarea id="reportDescription" class="form-textarea" placeholder="Írd le röviden a jelentés tartalmát..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="reportImage">Kép csatolása</label>
+            <input type="file" id="reportImage" class="form-file" accept="image/*">
+          </div>
+
+          <button id="submitReportBtn" class="submit-report-btn" type="button">Jelentés beküldése</button>
+        </div>
+
+        <div class="report-list-card">
+          <h2>Leadott jelentések</h2>
+          <div id="reportList" class="report-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="jarmu-igenyles" class="page">
+      <div class="page-header">
+        <div>
+          <p class="section-kicker">Dolgozói felület</p>
+          <h1>Jármű igénylés</h1>
+          <p class="section-subtext">Járműigénylés indoklással, rendszergazdai jóváhagyással.</p>
+        </div>
+      </div>
+
+      <div class="vehicle-layout">
+        <div class="vehicle-form-card">
+          <h2>Új jármű igénylés</h2>
+
+          <div class="form-group">
+            <label>Jármű típusa</label>
+            <div class="custom-select" id="vehicleTypeSelect">
+              <button type="button" class="custom-select-trigger" id="vehicleTypeTrigger">
+                <span id="vehicleTypeLabel">Válassz járművet</span>
+                <span class="custom-select-arrow">⌄</span>
+              </button>
+
+              <div class="custom-select-menu" id="vehicleTypeMenu">
+                <button type="button" class="custom-vehicle-option" data-value="bmw_x5">Volkswagen Crafter</button>
+                <button type="button" class="custom-vehicle-option" data-value="mercedes_vito">Mercedes Benz Sprinter</button>
+                <button type="button" class="custom-vehicle-option" data-value="audi_a6">Mercedes Benz Sprinter ESET</button>
+                <button type="button" class="custom-vehicle-option" data-value="toyota_hilux">Opel Astra J</button>
+                <button type="button" class="custom-vehicle-option" data-value="toyota_hilux">Opel Astra J Légimentők</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Skoda Octavia 2. fajta</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Skoda Octavia 1. fajta</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Mercedes Benz Sprinter ROKO (nagy felirat)</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Mercedes Benz Sprinter ROKO (kicsi felirat)</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Mentőmotor</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Audi Q5 fehér</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Mentőhelikopter</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Skoda Fabia - Ügyelet</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Nissan Pathfinder - Ügyelet</button>
+                <button type="button" class="custom-vehicle-option" data-value="ford_ranger">Mercedes Sprinter - Ügyelet</button>
+              </div>
+
+              <input type="hidden" id="vehicleType" value="">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="vehicleReason">Indoklás</label>
+            <textarea id="vehicleReason" class="form-textarea" placeholder="Írd le, miért van szükséged a járműre..."></textarea>
+          </div>
+
+          <button id="submitVehicleBtn" class="submit-report-btn" type="button">Jármű igénylés beküldése</button>
+        </div>
+
+        <div class="vehicle-list-card">
+          <h2>Leadott jármű igénylések</h2>
+          <div id="vehicleRequestList" class="report-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ugyintezesek" class="page">
+      <div class="page-header">
+        <div>
+          <p class="section-kicker">Dolgozói felület</p>
+          <h1>Ügyintézések</h1>
+          <p class="section-subtext">Szabadságkérelmek és adatváltoztatási igények kezelése.</p>
+        </div>
+      </div>
+
+      <div class="subtab-row" id="caseTabRow">
+  <button type="button" class="subtab-btn active" data-case-tab="szabadsag-tab">Szabadság</button>
+  <button type="button" class="subtab-btn" data-case-tab="adatvaltozas-tab">Adatváltoztatás</button>
+</div>
+
+      <div id="szabadsag-tab" class="case-tab active-case-tab">
+        <div class="case-layout">
+          <div class="case-form-card">
+            <h2>Szabadság igénylés</h2>
+
+            <div class="form-group">
+              <label for="leaveStart">Kezdő dátum</label>
+              <input type="date" id="leaveStart" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label for="leaveEnd">Befejező dátum</label>
+              <input type="date" id="leaveEnd" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label for="leaveReason">Indoklás</label>
+              <textarea id="leaveReason" class="form-textarea" placeholder="Írd le röviden a szabadság igénylésének okát..."></textarea>
+            </div>
+
+            <button id="submitLeaveBtn" class="submit-report-btn" type="button">Szabadság kérelem beküldése</button>
+          </div>
+
+          <div class="case-list-card">
+            <h2>Leadott szabadságkérelmek</h2>
+            <div id="leaveRequestList" class="report-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="adatvaltozas-tab" class="case-tab">
+        <div class="case-layout">
+          <div class="case-form-card">
+            <h2>Adatváltoztatás bejelentése</h2>
+
+            <div class="form-group">
+              <label>Adat típusa</label>
+              <div class="custom-select" id="dataChangeTypeSelect">
+                <button type="button" class="custom-select-trigger" id="dataChangeTypeTrigger">
+                  <span id="dataChangeTypeLabel">Válassz módosítandó adatot</span>
+                  <span class="custom-select-arrow">⌄</span>
+                </button>
+
+                <div class="custom-select-menu" id="dataChangeTypeMenu">
+                  <button type="button" class="custom-data-option" data-value="nev">IC/ROBLOX Név</button>
+                  <button type="button" class="custom-data-option" data-value="rendfokozat">Kompetencia</button>
+                  <button type="button" class="custom-data-option" data-value="azonosito">Azonosító</button>
+                  <button type="button" class="custom-data-option" data-value="beosztas">Jelszó változtatás</button>
+                  <button type="button" class="custom-data-option" data-value="egyeb">Egyéb adat</button>
+                </div>
+
+                <input type="hidden" id="dataChangeType" value="">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="oldValue">Jelenlegi adat</label>
+              <input type="text" id="oldValue" class="form-input" placeholder="Pl.: Mentőápoló">
+            </div>
+
+            <div class="form-group">
+              <label for="newValue">Új adat</label>
+              <input type="text" id="newValue" class="form-input" placeholder="Pl.: Mentőszakápoló">
+            </div>
+
+            <div class="form-group">
+              <label for="dataChangeReason">Indoklás</label>
+              <textarea id="dataChangeReason" class="form-textarea" placeholder="Írd le röviden, miért szükséges az adat módosítása..."></textarea>
+            </div>
+
+            <button id="submitDataChangeBtn" class="submit-report-btn" type="button">Adatváltoztatás beküldése</button>
+          </div>
+
+          <div class="case-list-card">
+            <h2>Leadott adatváltoztatási igények</h2>
+            <div id="dataChangeList" class="report-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="approvalModal" class="modal">
+    <div class="modal-content">
+      <h3>Szolgálat leadva</h3>
+      <p>Az elszámolt szolgálati idő jóváírásához rendszergazda jóváhagyása szükséges.</p>
+      <button id="closeModal" type="button">Rendben</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://lsbdbfzeugqnurkmdhxh.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_GrhobqQt4uN4Cl5G9t1YmQ_KCKw-wFP";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let currentProfile = null;
+    let startTime = null;
+    let timerInterval = null;
+
+     function showPage(pageId, clickedItem) {
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.remove("active-page");
+    });
+
+    const selectedPage = document.getElementById(pageId);
+    if (selectedPage) {
+      selectedPage.classList.add("active-page");
+    }
+
+    document.querySelectorAll("#topMenu .menu-item").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    if (clickedItem) {
+      clickedItem.classList.add("active");
+    }
+  }
+
+  function showCaseTab(tabId, clickedBtn) {
+    document.querySelectorAll(".case-tab").forEach(tab => {
+      tab.classList.remove("active-case-tab");
+    });
+
+    const selectedTab = document.getElementById(tabId);
+    if (selectedTab) {
+      selectedTab.classList.add("active-case-tab");
+    }
+
+    document.querySelectorAll("#caseTabRow .subtab-btn").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    if (clickedBtn) {
+      clickedBtn.classList.add("active");
+    }
+  }
+
+
+  function initTopMenu() {
+    document.querySelectorAll(".menu-item[data-page]").forEach(item => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        const pageId = item.dataset.page;
+        showPage(pageId, item);
+      });
+    });
+  }
+
+  function initCaseTabs() {
+    document.querySelectorAll(".subtab-btn[data-case-tab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tabId = btn.dataset.caseTab;
+        showCaseTab(tabId, btn);
+      });
+    });
+  }
+
+    function formatDateHu(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return dateString;
+      return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+    }
+
+    function formatDateTimeHu(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return dateString;
+      return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function statusBadgeClass(status) {
+      if (status === "approved") return "approved";
+      if (status === "rejected") return "rejected";
+      return "pending";
+    }
+
+    function statusTextHu(status) {
+      if (status === "approved") return "Elfogadva";
+      if (status === "rejected") return "Elutasítva";
+      return "Függőben";
+    }
+
+    async function requireAuth() {
+      const { data, error } = await sb.auth.getUser();
+
+      if (error || !data?.user) {
+        window.location.href = "index.html";
+        return false;
+      }
+
+      currentUser = data.user;
+      return true;
+    }
+
+    async function logout() {
+      await sb.auth.signOut();
+      window.location.href = "index.html";
+    }
+
+    async function loadProfile() {
+      const { data: profile, error } = await sb
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .single();
+
+      if (error || !profile) {
+        console.error(error);
+        alert("Nem sikerült betölteni a profilt.");
+        return false;
+      }
+
+      currentProfile = profile;
+
+      if (profile.must_change_password) {
+        window.location.href = "change-password.html";
+        return false;
+      }
+
+      const profileFullName = document.getElementById("profileFullName");
+      const profileRank = document.getElementById("profileRank");
+      const profileEmployeeId = document.getElementById("profileEmployeeId");
+      const profilePosition = document.getElementById("profilePosition");
+      const profilePlusPoints = document.getElementById("profilePlusPoints");
+      const profilePenaltyPoints = document.getElementById("profilePenaltyPoints");
+      const profileAwards = document.getElementById("profileAwards");
+      const profileTotalPoints = document.getElementById("profileTotalPoints");
+
+      if (profileFullName) profileFullName.textContent = profile.full_name || profile.username || "-";
+      if (profileRank) profileRank.textContent = profile.rank || "-";
+      if (profileEmployeeId) profileEmployeeId.textContent = profile.employee_id || "-";
+      if (profilePosition) profilePosition.textContent = profile.position || "-";
+      if (profilePlusPoints) profilePlusPoints.textContent = profile.plus_points ?? 0;
+      if (profilePenaltyPoints) profilePenaltyPoints.textContent = profile.penalty_points ?? 0;
+      if (profileAwards) profileAwards.textContent = profile.awards || "-";
+      if (profileTotalPoints) profileTotalPoints.textContent = profile.total_points ?? 0;
+
+      return true;
+    }
+
+    async function loadStaffTable() {
+      const { data, error } = await sb
+        .from("profiles")
+        .select("full_name, username, rank, employee_id, position, total_points, is_active, rank_order")
+        .order("rank_order", { ascending: true })
+        .order("full_name", { ascending: true });
+
+      const staffList = document.getElementById("staffList");
+      if (!staffList) return;
+
+      if (error) {
+        console.error(error);
+        staffList.innerHTML = `<p class="section-subtext">Nem sikerült betölteni az állománytáblát.</p>`;
+        return;
+      }
+
+      if (!data || !data.length) {
+        staffList.innerHTML = `<p class="section-subtext">Nincs megjeleníthető felhasználó.</p>`;
+        return;
+      }
+
+      staffList.innerHTML = "";
+
+      data.forEach(user => {
+        const displayName = user.full_name || user.username || "Ismeretlen";
+        const rank = user.rank || "-";
+        const employeeId = user.employee_id || "-";
+        const position = user.position || "-";
+        const totalPoints = user.total_points ?? 0;
+        const activeText = user.is_active ? "Aktív" : "Inaktív";
+        const statusClass = user.is_active ? "status-active" : "status-inactive";
+        const searchText = `${displayName} ${rank} ${employeeId} ${position}`.toLowerCase();
+
+        const card = document.createElement("div");
+        card.className = "staff-row-card";
+        card.setAttribute("data-search", searchText);
+
+        card.innerHTML = `
+          <div class="staff-name-block">
+            <h3>${escapeHtml(displayName)}</h3>
+            <p>${escapeHtml(rank)}</p>
+          </div>
+          <div class="staff-row-info">
+            <div class="staff-mini-box">
+              <span>Azonosító</span>
+              <strong>${escapeHtml(employeeId)}</strong>
+            </div>
+            <div class="staff-mini-box">
+              <span>Beosztás</span>
+              <strong>${escapeHtml(position)}</strong>
+            </div>
+            <div class="staff-mini-box">
+              <span>Pontok</span>
+              <strong>${escapeHtml(totalPoints)}</strong>
+            </div>
+            <div class="staff-mini-box">
+              <span>Státusz</span>
+              <strong class="${statusClass}">${activeText}</strong>
+            </div>
+          </div>
+        `;
+
+        staffList.appendChild(card);
+      });
+    }
+
+    async function loadWeeklyApprovedMinutes() {
+      const weeklyTime = document.getElementById("weeklyTime");
+      if (!weeklyTime || !currentUser) return;
+
+      const now = new Date();
+      const day = now.getDay();
+      const diffToMonday = day === 0 ? 6 : day - 1;
+
+      const monday = new Date(now);
+      monday.setHours(0, 0, 0, 0);
+      monday.setDate(now.getDate() - diffToMonday);
+
+      const { data, error } = await sb
+        .from("service_times")
+        .select("minutes")
+        .eq("user_id", currentUser.id)
+        .eq("status", "approved")
+        .gte("started_at", monday.toISOString());
+
+      if (error) {
+        console.error(error);
+        weeklyTime.textContent = "0 perc";
+        return;
+      }
+
+      const total = (data || []).reduce((sum, row) => sum + (row.minutes || 0), 0);
+      weeklyTime.textContent = `${total} perc`;
+    }
+
+    async function uploadReportImage(file) {
+      if (!file) return null;
+
+      const extension = file.name.split(".").pop();
+      const path = `${currentUser.id}/${Date.now()}.${extension}`;
+
+      const { error: uploadError } = await sb.storage
+        .from("report-images")
+        .upload(path, file, { upsert: false });
+
+      if (uploadError) {
+        console.warn(uploadError);
+        return null;
+      }
+
+      const { data } = sb.storage.from("report-images").getPublicUrl(path);
+      return data?.publicUrl || null;
+    }
+
+    function renderReportItem(item) {
+      const imageHtml = item.image_url
+        ? `
+        <div class="report-image-wrapper">
+          <img src="${escapeHtml(item.image_url)}" alt="Csatolt jelentéskép" class="report-image-preview">
+        </div>
+      `
+        : "";
+
+      return `
+      <div class="report-item ${statusBadgeClass(item.status)}">
+        <div class="report-item-top">
+          <div>
+            <h3>${escapeHtml(item.report_type_name)}</h3>
+            <p>Beküldve: ${formatDateTimeHu(item.created_at)}</p>
+          </div>
+          <span class="report-status ${statusBadgeClass(item.status)}">${statusTextHu(item.status)}</span>
+        </div>
+        <p class="report-desc">${escapeHtml(item.description)}</p>
+        ${imageHtml}
+      </div>
+    `;
+    }
+
+    function renderSimpleRequestItem(title, subtitle, desc, status) {
+      return `
+      <div class="report-item ${statusBadgeClass(status)}">
+        <div class="report-item-top">
+          <div>
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(subtitle)}</p>
+          </div>
+          <span class="report-status ${statusBadgeClass(status)}">${statusTextHu(status)}</span>
+        </div>
+        <p class="report-desc">${escapeHtml(desc)}</p>
+      </div>
+    `;
+    }
+
+    async function loadReports() {
+      const reportList = document.getElementById("reportList");
+      if (!reportList) return;
+
+      const { data, error } = await sb
+        .from("reports")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        reportList.innerHTML = `<p class="section-subtext">Nem sikerült betölteni a jelentéseket.</p>`;
+        return;
+      }
+
+      if (!data || !data.length) {
+        reportList.innerHTML = `<p class="section-subtext">Még nincs leadott jelentésed.</p>`;
+        return;
+      }
+
+      reportList.innerHTML = data.map(renderReportItem).join("");
+    }
+
+    async function loadVehicleRequests() {
+      const vehicleRequestList = document.getElementById("vehicleRequestList");
+      if (!vehicleRequestList) return;
+
+      const { data, error } = await sb
+        .from("vehicle_requests")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        vehicleRequestList.innerHTML = `<p class="section-subtext">Nem sikerült betölteni a jármű igényléseket.</p>`;
+        return;
+      }
+
+      if (!data || !data.length) {
+        vehicleRequestList.innerHTML = `<p class="section-subtext">Még nincs leadott jármű igénylésed.</p>`;
+        return;
+      }
+
+      vehicleRequestList.innerHTML = data.map(item =>
+        renderSimpleRequestItem(
+          item.vehicle_type,
+          `Beküldve: ${formatDateTimeHu(item.created_at)}`,
+          item.reason,
+          item.status
+        )
+      ).join("");
+    }
+
+    async function loadLeaveRequests() {
+      const leaveRequestList = document.getElementById("leaveRequestList");
+      if (!leaveRequestList) return;
+
+      const { data, error } = await sb
+        .from("leave_requests")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        leaveRequestList.innerHTML = `<p class="section-subtext">Nem sikerült betölteni a szabadságkérelmeket.</p>`;
+        return;
+      }
+
+      if (!data || !data.length) {
+        leaveRequestList.innerHTML = `<p class="section-subtext">Még nincs leadott szabadságkérelmed.</p>`;
+        return;
+      }
+
+      leaveRequestList.innerHTML = data.map(item =>
+        renderSimpleRequestItem(
+          "Szabadság kérelem",
+          `Időszak: ${formatDateHu(item.start_date)} - ${formatDateHu(item.end_date)}`,
+          item.reason,
+          item.status
+        )
+      ).join("");
+    }
+
+    async function loadDataChangeRequests() {
+      const dataChangeList = document.getElementById("dataChangeList");
+      if (!dataChangeList) return;
+
+      const { data, error } = await sb
+        .from("data_change_requests")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        dataChangeList.innerHTML = `<p class="section-subtext">Nem sikerült betölteni az adatváltoztatási igényeket.</p>`;
+        return;
+      }
+
+      if (!data || !data.length) {
+        dataChangeList.innerHTML = `<p class="section-subtext">Még nincs leadott adatváltoztatási igényed.</p>`;
+        return;
+      }
+
+      dataChangeList.innerHTML = data.map(item => `
+      <div class="report-item ${statusBadgeClass(item.status)}">
+        <div class="report-item-top">
+          <div>
+            <h3>Adatváltoztatás - ${escapeHtml(item.field_name)}</h3>
+            <p>Beküldve: ${formatDateTimeHu(item.created_at)}</p>
+          </div>
+          <span class="report-status ${statusBadgeClass(item.status)}">${statusTextHu(item.status)}</span>
+        </div>
+        <p class="report-desc">Jelenlegi adat: ${escapeHtml(item.current_value || "-")} → Új adat: ${escapeHtml(item.requested_value)}</p>
+        <p class="report-desc">Indoklás: ${escapeHtml(item.reason)}</p>
+      </div>
+    `).join("");
+    }
+
+    function initCustomSelect(config) {
+      const select = document.getElementById(config.selectId);
+      const trigger = document.getElementById(config.triggerId);
+      const label = document.getElementById(config.labelId);
+      const hidden = document.getElementById(config.hiddenId);
+      const options = document.querySelectorAll(config.optionSelector);
+
+      if (!select || !trigger || !label || !hidden || !options.length) return;
+
+      trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        select.classList.toggle("open");
+      });
+
+      options.forEach(option => {
+        option.addEventListener("click", () => {
+          hidden.value = option.dataset.value;
+          label.textContent = option.textContent;
+
+          options.forEach(opt => opt.classList.remove("selected"));
+          option.classList.add("selected");
+          select.classList.remove("open");
+        });
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!select.contains(e.target)) {
+          select.classList.remove("open");
+        }
+      });
+    }
+
+    async function submitReport() {
+      const selectedTypeValue = document.getElementById("reportType").value;
+      const selectedTypeText = document.getElementById("reportTypeLabel").textContent.trim();
+      const reportDescription = document.getElementById("reportDescription");
+      const reportImage = document.getElementById("reportImage");
+
+      const descriptionText = reportDescription.value.trim();
+      const selectedImage = reportImage?.files?.[0] || null;
+
+      if (!selectedTypeValue) {
+        alert("Kérlek, válassz jelentéstípust!");
+        return;
+      }
+
+      if (!descriptionText) {
+        alert("Kérlek, írd le a jelentés tartalmát!");
+        return;
+      }
+
+      let reportTypeId = null;
+      let awardedPoints = 0;
+
+      const { data: reportTypeRow } = await sb
+        .from("report_types")
+        .select("id, default_points")
+        .eq("name", selectedTypeText)
+        .maybeSingle();
+
+      if (reportTypeRow) {
+        reportTypeId = reportTypeRow.id;
+        awardedPoints = reportTypeRow.default_points || 0;
+      }
+
+      const imageUrl = await uploadReportImage(selectedImage);
+
+      const { error } = await sb.from("reports").insert({
+        user_id: currentUser.id,
+        report_type_id: reportTypeId,
+        report_type_name: selectedTypeText,
+        description: descriptionText,
+        image_url: imageUrl,
+        points_awarded: awardedPoints,
+        status: "pending"
+      });
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elmenteni a jelentést.");
+        return;
+      }
+
+      document.getElementById("reportType").value = "";
+      document.getElementById("reportTypeLabel").textContent = "Válassz jelentéstípust";
+      document.querySelectorAll(".custom-option").forEach(opt => opt.classList.remove("selected"));
+      reportDescription.value = "";
+      if (reportImage) reportImage.value = "";
+
+      await loadReports();
+    }
+
+    async function submitVehicleRequest() {
+      const selectedVehicleValue = document.getElementById("vehicleType").value;
+      const selectedVehicleText = document.getElementById("vehicleTypeLabel").textContent.trim();
+      const vehicleReason = document.getElementById("vehicleReason");
+      const reasonText = vehicleReason.value.trim();
+
+      if (!selectedVehicleValue) {
+        alert("Kérlek, válassz járművet!");
+        return;
+      }
+
+      if (!reasonText) {
+        alert("Kérlek, írd le az igénylés indoklását!");
+        return;
+      }
+
+      const { error } = await sb.from("vehicle_requests").insert({
+        user_id: currentUser.id,
+        vehicle_type: selectedVehicleText,
+        reason: reasonText,
+        status: "pending"
+      });
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elküldeni a jármű igénylést.");
+        return;
+      }
+
+      document.getElementById("vehicleType").value = "";
+      document.getElementById("vehicleTypeLabel").textContent = "Válassz járművet";
+      document.querySelectorAll(".custom-vehicle-option").forEach(opt => opt.classList.remove("selected"));
+      vehicleReason.value = "";
+
+      await loadVehicleRequests();
+    }
+
+    async function submitLeaveRequest() {
+      const leaveStart = document.getElementById("leaveStart");
+      const leaveEnd = document.getElementById("leaveEnd");
+      const leaveReason = document.getElementById("leaveReason");
+
+      const startValue = leaveStart.value;
+      const endValue = leaveEnd.value;
+      const reasonValue = leaveReason.value.trim();
+
+      if (!startValue) {
+        alert("Kérlek, add meg a szabadság kezdő dátumát!");
+        return;
+      }
+
+      if (!endValue) {
+        alert("Kérlek, add meg a szabadság befejező dátumát!");
+        return;
+      }
+
+      if (endValue < startValue) {
+        alert("A befejező dátum nem lehet korábbi, mint a kezdő dátum!");
+        return;
+      }
+
+      if (!reasonValue) {
+        alert("Kérlek, írd le az igénylés indoklását!");
+        return;
+      }
+
+      const { error } = await sb.from("leave_requests").insert({
+        user_id: currentUser.id,
+        start_date: startValue,
+        end_date: endValue,
+        reason: reasonValue,
+        status: "pending"
+      });
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elküldeni a szabadság kérelmet.");
+        return;
+      }
+
+      leaveStart.value = "";
+      leaveEnd.value = "";
+      leaveReason.value = "";
+
+      await loadLeaveRequests();
+    }
+
+    async function submitDataChangeRequest() {
+      const selectedTypeValue = document.getElementById("dataChangeType").value;
+      const selectedTypeText = document.getElementById("dataChangeTypeLabel").textContent.trim();
+      const oldValue = document.getElementById("oldValue").value.trim();
+      const newValue = document.getElementById("newValue").value.trim();
+      const reasonVal = document.getElementById("dataChangeReason").value.trim();
+
+      if (!selectedTypeValue) {
+        alert("Kérlek, válassz módosítandó adatot!");
+        return;
+      }
+
+      if (!oldValue) {
+        alert("Kérlek, add meg a jelenlegi adatot!");
+        return;
+      }
+
+      if (!newValue) {
+        alert("Kérlek, add meg az új adatot!");
+        return;
+      }
+
+      if (!reasonVal) {
+        alert("Kérlek, írd le az indoklást!");
+        return;
+      }
+
+      const { error } = await sb.from("data_change_requests").insert({
+        user_id: currentUser.id,
+        field_name: selectedTypeText,
+        current_value: oldValue,
+        requested_value: newValue,
+        reason: reasonVal,
+        status: "pending"
+      });
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elküldeni az adatváltoztatási igényt.");
+        return;
+      }
+
+      document.getElementById("dataChangeType").value = "";
+      document.getElementById("dataChangeTypeLabel").textContent = "Válassz módosítandó adatot";
+      document.querySelectorAll(".custom-data-option").forEach(opt => opt.classList.remove("selected"));
+      document.getElementById("oldValue").value = "";
+      document.getElementById("newValue").value = "";
+      document.getElementById("dataChangeReason").value = "";
+
+      await loadDataChangeRequests();
+    }
+
+    async function submitServiceTime(startedAt, endedAt) {
+      const diffSeconds = Math.floor((endedAt - startedAt) / 1000);
+      const minutes = Math.max(0, Math.floor(diffSeconds / 60));
+
+      const { error } = await sb.from("service_times").insert({
+        user_id: currentUser.id,
+        started_at: startedAt.toISOString(),
+        ended_at: endedAt.toISOString(),
+        minutes,
+        status: "pending"
+      });
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elmenteni a szolgálati időt.");
+        return false;
+      }
+
+      return true;
+    }
+
+    async function initPage() {
+      initTopMenu();
+      initCaseTabs();
+      
+      const ok = await requireAuth();
+      if (!ok) return;
+
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          await logout();
+        });
+      }
+
+      initCustomSelect({
+        selectId: "reportTypeSelect",
+        triggerId: "reportTypeTrigger",
+        labelId: "reportTypeLabel",
+        hiddenId: "reportType",
+        optionSelector: ".custom-option"
+      });
+
+      initCustomSelect({
+        selectId: "vehicleTypeSelect",
+        triggerId: "vehicleTypeTrigger",
+        labelId: "vehicleTypeLabel",
+        hiddenId: "vehicleType",
+        optionSelector: ".custom-vehicle-option"
+      });
+
+      initCustomSelect({
+        selectId: "dataChangeTypeSelect",
+        triggerId: "dataChangeTypeTrigger",
+        labelId: "dataChangeTypeLabel",
+        hiddenId: "dataChangeType",
+        optionSelector: ".custom-data-option"
+      });
+
+      const profileLoaded = await loadProfile();
+      if (!profileLoaded) return;
+
+      await loadStaffTable();
+      await loadWeeklyApprovedMinutes();
+      await loadReports();
+      await loadVehicleRequests();
+      await loadLeaveRequests();
+      await loadDataChangeRequests();
+
+      const submitReportBtn = document.getElementById("submitReportBtn");
+      if (submitReportBtn) submitReportBtn.addEventListener("click", submitReport);
+
+      const submitVehicleBtn = document.getElementById("submitVehicleBtn");
+      if (submitVehicleBtn) submitVehicleBtn.addEventListener("click", submitVehicleRequest);
+
+      const submitLeaveBtn = document.getElementById("submitLeaveBtn");
+      if (submitLeaveBtn) submitLeaveBtn.addEventListener("click", submitLeaveRequest);
+
+      const submitDataChangeBtn = document.getElementById("submitDataChangeBtn");
+      if (submitDataChangeBtn) submitDataChangeBtn.addEventListener("click", submitDataChangeRequest);
+
+      const staffSearch = document.getElementById("staffSearch");
+      const staffList = document.getElementById("staffList");
+      if (staffSearch && staffList) {
+        staffSearch.addEventListener("input", () => {
+          const value = staffSearch.value.trim().toLowerCase();
+          const cards = staffList.querySelectorAll(".staff-row-card");
+
+          cards.forEach(card => {
+            const searchText = card.getAttribute("data-search") || "";
+            card.style.display = searchText.includes(value) ? "" : "none";
+          });
+        });
+      }
+
+      const timerDisplay = document.getElementById("timer");
+      const startBtn = document.getElementById("startBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const modal = document.getElementById("approvalModal");
+      const closeModalBtn = document.getElementById("closeModal");
+
+      if (startBtn && stopBtn && timerDisplay) {
+        startBtn.addEventListener("click", () => {
+          if (timerInterval !== null) return;
+
+          startTime = new Date();
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+
+          timerInterval = setInterval(() => {
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+
+            const hours = String(Math.floor(diff / 3600)).padStart(2, "0");
+            const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
+            const seconds = String(diff % 60).padStart(2, "0");
+
+            timerDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+          }, 1000);
+        });
+
+        stopBtn.addEventListener("click", async () => {
+          if (!startTime) return;
+
+          const endedAt = new Date();
+          const startedAt = startTime;
+
+          clearInterval(timerInterval);
+          timerInterval = null;
+          startTime = null;
+
+          timerDisplay.textContent = "00:00:00";
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+
+          const saved = await submitServiceTime(startedAt, endedAt);
+          if (saved && modal) {
+            modal.classList.add("active");
+            await loadWeeklyApprovedMinutes();
+          }
+        });
+      }
+
+      if (closeModalBtn && modal) {
+        closeModalBtn.addEventListener("click", () => {
+          modal.classList.remove("active");
+        });
+
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.classList.remove("active");
+          }
+        });
+      }
+    }
+
+    initPage();
+  </script>
+
+</body>
+</html>

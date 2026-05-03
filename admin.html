@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEK - Admin Panel</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <header class="top-menu">
+    <nav class="menu-row">
+      <a href="#" class="menu-item active" onclick="event.preventDefault(); showAdminPage('felhasznalok', this)">Felhasználók</a>
+      <a href="#" class="menu-item" onclick="event.preventDefault(); showAdminPage('adat-modositas', this)">Adat módosítás</a>
+      <a href="#" class="menu-item" onclick="event.preventDefault(); showAdminPage('szolgalati-idok', this)">Szolgálati idők</a>
+      <a href="#" class="menu-item" onclick="event.preventDefault(); showAdminPage('jelentesek-admin', this)">Jelentések</a>
+      <a href="#" class="menu-item" onclick="event.preventDefault(); showAdminPage('jarmu-admin', this)">Jármű igénylések</a>
+      <a href="#" class="menu-item" onclick="event.preventDefault(); showAdminPage('ugyintezesek-admin', this)">Ügyintézések</a>
+      <a href="#" class="menu-item" onclick="event.preventDefault(); showAdminPage('regisztraciok', this)">Regisztrációk</a>
+      <a href="#" class="menu-item" onclick="event.preventDefault(); showAdminPage('archivum-admin', this)">Archívum</a>
+    </nav>
+
+    <div class="top-actions">
+      <a href="fooldal.html" class="back-btn" id="backBtn">Dolgozói felület</a>
+      <a href="index.html" class="logout-btn" id="logoutBtn">Kijelentkezés</a>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <section id="felhasznalok" class="page active-page">
+      <div class="page-header">
+        <p class="section-kicker">Admin felület</p>
+        <h1>Felhasználók</h1>
+        <p class="section-subtext">A rendszerben lévő felhasználók áttekintése és kezelése.</p>
+      </div>
+      <div class="admin-list" id="felhasznalokList"></div>
+    </section>
+
+    <section id="adat-modositas" class="page">
+      <div class="page-header">
+        <p class="section-kicker">Admin felület</p>
+        <h1>Adat módosítás</h1>
+        <p class="section-subtext">Felhasználók adatainak szerkesztése és jogosultságkezelése.</p>
+      </div>
+
+      <div class="admin-grid">
+        <div class="admin-panel">
+          <h2>Felhasználók</h2>
+
+          <div class="form-group">
+            <label for="userSearch">Keresés</label>
+            <input type="text" id="userSearch" class="form-input" placeholder="Keresés név, rendfokozat vagy azonosító alapján...">
+          </div>
+
+          <div class="admin-list" id="userList"></div>
+        </div>
+
+        <div class="admin-panel">
+          <h2>Adatok szerkesztése</h2>
+
+          <div class="form-group">
+            <label for="editName">Név</label>
+            <input type="text" id="editName" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label for="editRank">Rendfokozat</label>
+            <input type="text" id="editRank" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label for="editUserId">Azonosító</label>
+            <input type="text" id="editUserId" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label for="editRole">Beosztás</label>
+            <input type="text" id="editRole" class="form-input">
+          </div>
+
+          <div class="admin-edit-grid">
+            <div class="form-group">
+              <label for="editPlusPoints">Pluszpont</label>
+              <input type="number" id="editPlusPoints" class="form-input" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="editMinusPoints">Hibapont</label>
+              <input type="number" id="editMinusPoints" class="form-input" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="editTotalPoints">Pontok</label>
+              <input type="number" id="editTotalPoints" class="form-input" min="0">
+            </div>
+          </div>
+
+          <div class="admin-toggle-row">
+            <label for="editIsAdmin">Admin jogosultság</label>
+            <input type="checkbox" id="editIsAdmin">
+          </div>
+
+          <div class="action-buttons">
+            <button class="approve-btn" type="button" onclick="saveUserData()">Mentés</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="szolgalati-idok" class="page">
+      <div class="page-header">
+        <p class="section-kicker">Admin felület</p>
+        <h1>Szolgálati idők</h1>
+        <p class="section-subtext">Leadott szolgálati idők jóváhagyása vagy elutasítása.</p>
+      </div>
+      <div class="admin-list" id="serviceTimesList"></div>
+    </section>
+
+    <section id="jelentesek-admin" class="page">
+      <div class="page-header">
+        <p class="section-kicker">Admin felület</p>
+        <h1>Jelentések</h1>
+        <p class="section-subtext">Felhasználói jelentések áttekintése és kezelése.</p>
+      </div>
+      <div class="admin-list" id="reportsAdminList"></div>
+    </section>
+
+    <section id="jarmu-admin" class="page">
+      <div class="page-header">
+        <p class="section-kicker">Admin felület</p>
+        <h1>Jármű igénylések</h1>
+        <p class="section-subtext">Beküldött járműigénylések kezelése.</p>
+      </div>
+      <div class="admin-list" id="vehicleAdminList"></div>
+    </section>
+
+    <section id="ugyintezesek-admin" class="page">
+      <div class="page-header">
+        <p class="section-kicker">Admin felület</p>
+        <h1>Ügyintézések</h1>
+        <p class="section-subtext">Szabadságkérelmek és adatváltoztatási igények elbírálása.</p>
+      </div>
+
+      <div class="admin-grid">
+        <div class="admin-panel">
+          <h2>Szabadság bírálás</h2>
+          <div class="admin-list" id="leaveAdminList"></div>
+        </div>
+
+        <div class="admin-panel">
+          <h2>Adatváltoztatás bírálás</h2>
+          <div class="admin-list" id="dataChangeAdminList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="regisztraciok" class="page">
+      <div class="page-header">
+        <p class="section-kicker">Admin felület</p>
+        <h1>Regisztrációk</h1>
+        <p class="section-subtext">Új felhasználói regisztrációs kérelmek kezelése.</p>
+      </div>
+      <div class="admin-list" id="registrationsList"></div>
+    </section>
+
+    <section id="archivum-admin" class="page">
+      <div class="page-header">
+        <p class="section-kicker">Admin felület</p>
+        <h1>Archívum</h1>
+        <p class="section-subtext">Lezárt kérelmek és döntések áttekintése.</p>
+      </div>
+
+      <div class="subtab-row">
+        <button type="button" class="subtab-btn active" onclick="showArchiveTab('archiv-jarmu', this)">Lezárt jármű igénylések</button>
+        <button type="button" class="subtab-btn" onclick="showArchiveTab('archiv-szabadsag', this)">Lezárt szabadság kérelmek</button>
+        <button type="button" class="subtab-btn" onclick="showArchiveTab('archiv-adatvaltozas', this)">Lezárt adatváltoztatás kérelmek</button>
+        <button type="button" class="subtab-btn" onclick="showArchiveTab('archiv-jelentesek', this)">Lezárt jelentések</button>
+        <button type="button" class="subtab-btn" onclick="showArchiveTab('archiv-regisztraciok', this)">Lezárt regisztrációk</button>
+      </div>
+
+      <div id="archiv-jarmu" class="archive-tab active-archive-tab">
+        <div class="admin-list" id="archiveVehicleList"></div>
+      </div>
+
+      <div id="archiv-szabadsag" class="archive-tab">
+        <div class="admin-list" id="archiveLeaveList"></div>
+      </div>
+
+      <div id="archiv-adatvaltozas" class="archive-tab">
+        <div class="admin-list" id="archiveDataChangeList"></div>
+      </div>
+
+      <div id="archiv-jelentesek" class="archive-tab">
+        <div class="admin-list" id="archiveReportsList"></div>
+      </div>
+
+      <div id="archiv-regisztraciok" class="archive-tab">
+        <div class="admin-list" id="archiveRegistrationsList"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://lsbdbfzeugqnurkmdhxh.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_GrhobqQt4uN4Cl5G9t1YmQ_KCKw-wFP";
+
+    /*
+      FONTOS:
+      A regisztráció jóváhagyása NEM hív többé frontend auth.signUp()-ot,
+      ezért nem fut email rate limitbe.
+
+      Ehhez kell egy Supabase Edge Function, pl.:
+      https://lsbdbfzeugqnurkmdhxh.supabase.co/functions/v1/approve-registration
+
+      Ha más nevet adsz az Edge Functionnek, itt írd át:
+    */
+    const APPROVE_REGISTRATION_FUNCTION_URL =
+  "https://lsbdbfzeugqnurkmdhxh.supabase.co/functions/v1/dynamic-handler";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let currentProfile = null;
+    let selectedUserCard = null;
+    let selectedUserId = null;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatDateHu(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return dateString;
+      return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+    }
+
+    function formatDateTimeHu(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return dateString;
+
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      const h = String(date.getHours()).padStart(2, "0");
+      const min = String(date.getMinutes()).padStart(2, "0");
+      return `${y}.${m}.${d} ${h}:${min}`;
+    }
+
+    function statusTextHu(status) {
+      if (status === "approved") return "Elfogadva";
+      if (status === "rejected") return "Elutasítva";
+      return "Függőben";
+    }
+
+    function statusBadgeClass(status) {
+      if (status === "approved") return "green";
+      if (status === "rejected") return "red";
+      return "yellow";
+    }
+
+    function showAdminPage(pageId, clickedItem) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active-page");
+      });
+
+      const selectedPage = document.getElementById(pageId);
+      if (selectedPage) {
+        selectedPage.classList.add("active-page");
+      }
+
+      document.querySelectorAll(".menu-item").forEach(item => {
+        item.classList.remove("active");
+      });
+
+      if (clickedItem) {
+        clickedItem.classList.add("active");
+      }
+    }
+
+    function showArchiveTab(tabId, clickedBtn) {
+      document.querySelectorAll(".archive-tab").forEach(tab => {
+        tab.classList.remove("active-archive-tab");
+      });
+
+      const selectedTab = document.getElementById(tabId);
+      if (selectedTab) {
+        selectedTab.classList.add("active-archive-tab");
+      }
+
+      document.querySelectorAll("#archivum-admin .subtab-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      if (clickedBtn) {
+        clickedBtn.classList.add("active");
+      }
+    }
+
+    async function requireAdmin() {
+      const { data: userData, error: userError } = await sb.auth.getUser();
+
+      if (userError || !userData?.user) {
+        window.location.href = "index.html";
+        return false;
+      }
+
+      currentUser = userData.user;
+
+      const { data: profile, error: profileError } = await sb
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .single();
+
+      if (profileError || !profile) {
+        alert("Profil nem található.");
+        window.location.href = "index.html";
+        return false;
+      }
+
+      currentProfile = profile;
+
+      if (profile.must_change_password) {
+        window.location.href = "change-password.html";
+        return false;
+      }
+
+      if (!profile.is_admin) {
+        alert("Nincs jogosultságod az admin felülethez.");
+        window.location.href = "fooldal.html";
+        return false;
+      }
+
+      return true;
+    }
+
+    async function logout() {
+      await sb.auth.signOut();
+      window.location.href = "index.html";
+    }
+
+    async function getProfilesMapByIds(ids) {
+      const filtered = [...new Set((ids || []).filter(Boolean))];
+      if (!filtered.length) return {};
+
+      const { data, error } = await sb
+        .from("profiles")
+        .select("id, username, full_name, rank, employee_id, position, is_admin")
+        .in("id", filtered);
+
+      if (error) {
+        console.error(error);
+        return {};
+      }
+
+      const map = {};
+      data.forEach(row => {
+        map[row.id] = row;
+      });
+      return map;
+    }
+
+    function displayUserName(profile) {
+      if (!profile) return "Ismeretlen";
+      return profile.full_name || profile.username || "Ismeretlen";
+    }
+
+    function emptyMessage(text) {
+      return `<p class="section-subtext">${escapeHtml(text)}</p>`;
+    }
+
+    async function loadFelhasznalok() {
+      const section = document.getElementById("felhasznalokList");
+      if (!section) return;
+
+      const { data, error } = await sb
+        .from("profiles")
+        .select("*")
+        .order("rank_order", { ascending: true })
+        .order("full_name", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        section.innerHTML = emptyMessage("Nem sikerült betölteni a felhasználókat.");
+        return;
+      }
+
+      if (!data || !data.length) {
+        section.innerHTML = emptyMessage("Nincs megjeleníthető felhasználó.");
+        return;
+      }
+
+      section.innerHTML = data.map(user => `
+        <div class="admin-card row-card">
+          <div class="admin-main">
+            <h3>${escapeHtml(user.full_name || user.username || "-")}</h3>
+            <p>${escapeHtml(user.rank || "-")} • ${escapeHtml(user.employee_id || "-")} • ${escapeHtml(user.position || "-")}</p>
+          </div>
+          <div class="admin-badges">
+            <span class="badge ${user.is_active ? "green" : "red"}">${user.is_active ? "Aktív" : "Inaktív"}</span>
+            <span class="badge ${user.is_admin ? "yellow" : "blue"}">${user.is_admin ? "Admin" : "User"}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function loadUserEditorList() {
+      const userList = document.getElementById("userList");
+      if (!userList) return;
+
+      const { data, error } = await sb
+        .from("profiles")
+        .select("*")
+        .order("rank_order", { ascending: true })
+        .order("full_name", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        userList.innerHTML = emptyMessage("Nem sikerült betölteni a szerkeszthető felhasználókat.");
+        return;
+      }
+
+      if (!data || !data.length) {
+        userList.innerHTML = emptyMessage("Nincs szerkeszthető felhasználó.");
+        return;
+      }
+
+      userList.innerHTML = "";
+
+      data.forEach(user => {
+        const card = document.createElement("div");
+        card.className = "admin-card selectable-user";
+        card.setAttribute(
+          "data-search",
+          `${user.full_name || ""} ${user.username || ""} ${user.rank || ""} ${user.employee_id || ""} ${user.position || ""}`.toLowerCase()
+        );
+
+        card.innerHTML = `
+          <h3>${escapeHtml(user.full_name || user.username || "-")}</h3>
+          <p>${escapeHtml(user.rank || "-")} • ${escapeHtml(user.employee_id || "-")}</p>
+        `;
+
+        card.addEventListener("click", () => {
+          selectUser(card, user);
+        });
+
+        userList.appendChild(card);
+      });
+    }
+
+    function selectUser(card, userData) {
+      document.querySelectorAll(".selectable-user").forEach(c => {
+        c.classList.remove("active");
+      });
+
+      card.classList.add("active");
+      selectedUserCard = card;
+      selectedUserId = userData.id;
+
+      document.getElementById("editName").value = userData.full_name || userData.username || "";
+      document.getElementById("editRank").value = userData.rank || "";
+      document.getElementById("editUserId").value = userData.employee_id || "";
+      document.getElementById("editRole").value = userData.position || "";
+      document.getElementById("editPlusPoints").value = userData.plus_points ?? 0;
+      document.getElementById("editMinusPoints").value = userData.penalty_points ?? 0;
+      document.getElementById("editTotalPoints").value = userData.total_points ?? 0;
+      document.getElementById("editIsAdmin").checked = !!userData.is_admin;
+    }
+
+    async function saveUserData() {
+      if (!selectedUserCard || !selectedUserId) {
+        alert("Válassz ki egy felhasználót!");
+        return;
+      }
+
+      const full_name = document.getElementById("editName").value.trim();
+      const rank = document.getElementById("editRank").value.trim();
+      const employee_id = document.getElementById("editUserId").value.trim();
+      const position = document.getElementById("editRole").value.trim();
+      const plus_points = Number(document.getElementById("editPlusPoints").value || 0);
+      const penalty_points = Number(document.getElementById("editMinusPoints").value || 0);
+      const total_points = Number(document.getElementById("editTotalPoints").value || 0);
+      const is_admin = document.getElementById("editIsAdmin").checked;
+
+      if (!full_name || !rank || !employee_id || !position) {
+        alert("Kérlek, tölts ki minden kötelező adatot!");
+        return;
+      }
+
+      const { error } = await sb
+        .from("profiles")
+        .update({
+          full_name,
+          rank,
+          employee_id,
+          position,
+          plus_points,
+          penalty_points,
+          total_points,
+          is_admin
+        })
+        .eq("id", selectedUserId);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült menteni a felhasználó adatait.");
+        return;
+      }
+
+      await loadFelhasznalok();
+      await loadUserEditorList();
+      alert("Adatok mentve.");
+    }
+
+    async function renderPendingServiceTimes() {
+      const container = document.getElementById("serviceTimesList");
+      if (!container) return;
+
+      const { data, error } = await sb
+        .from("service_times")
+        .select("*")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = emptyMessage("Nem sikerült betölteni a szolgálati időket.");
+        return;
+      }
+
+      if (!data.length) {
+        container.innerHTML = emptyMessage("Nincs függő szolgálati idő.");
+        return;
+      }
+
+      const userMap = await getProfilesMapByIds(data.map(row => row.user_id));
+
+      container.innerHTML = data.map(row => {
+        const user = userMap[row.user_id];
+        return `
+          <div class="admin-card row-card">
+            <div class="admin-main">
+              <h3>${escapeHtml(displayUserName(user))}</h3>
+              <p>Leadott idő: ${escapeHtml(row.minutes ?? 0)} perc • Kezdés: ${escapeHtml(formatDateTimeHu(row.started_at))}</p>
+            </div>
+            <div class="action-buttons">
+              <button class="approve-btn" type="button" onclick="approveServiceTime(${row.id})">Jóváhagyás</button>
+              <button class="reject-btn" type="button" onclick="rejectServiceTime(${row.id})">Elutasítás</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function renderPendingReports() {
+      const container = document.getElementById("reportsAdminList");
+      if (!container) return;
+
+      const { data, error } = await sb
+        .from("reports")
+        .select("*")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = emptyMessage("Nem sikerült betölteni a jelentéseket.");
+        return;
+      }
+
+      if (!data.length) {
+        container.innerHTML = emptyMessage("Nincs függő jelentés.");
+        return;
+      }
+
+      const userMap = await getProfilesMapByIds(data.map(row => row.user_id));
+
+      container.innerHTML = data.map(row => {
+        const user = userMap[row.user_id];
+        return `
+          <div class="admin-card column-card">
+            <div class="admin-main">
+              <h3>${escapeHtml(row.report_type_name)}</h3>
+              <p>Beküldte: ${escapeHtml(displayUserName(user))} • ${escapeHtml(formatDateTimeHu(row.created_at))}</p>
+            </div>
+            <p class="card-description">${escapeHtml(row.description)}</p>
+            <div class="action-buttons">
+              <button class="approve-btn" type="button" onclick="approveReport(${row.id})">Jóváhagyás</button>
+              <button class="reject-btn" type="button" onclick="rejectReport(${row.id})">Elutasítás</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function renderPendingVehicleRequests() {
+      const container = document.getElementById("vehicleAdminList");
+      if (!container) return;
+
+      const { data, error } = await sb
+        .from("vehicle_requests")
+        .select("*")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = emptyMessage("Nem sikerült betölteni a jármű igényléseket.");
+        return;
+      }
+
+      if (!data.length) {
+        container.innerHTML = emptyMessage("Nincs függő jármű igénylés.");
+        return;
+      }
+
+      const userMap = await getProfilesMapByIds(data.map(row => row.user_id));
+
+      container.innerHTML = data.map(row => {
+        const user = userMap[row.user_id];
+        return `
+          <div class="admin-card column-card">
+            <div class="admin-main">
+              <h3>${escapeHtml(row.vehicle_type)}</h3>
+              <p>Igényelte: ${escapeHtml(displayUserName(user))} • ${escapeHtml(formatDateTimeHu(row.created_at))}</p>
+            </div>
+            <p class="card-description">${escapeHtml(row.reason)}</p>
+            <div class="action-buttons">
+              <button class="approve-btn" type="button" onclick="approveVehicleRequest(${row.id})">Jóváhagyás</button>
+              <button class="reject-btn" type="button" onclick="rejectVehicleRequest(${row.id})">Elutasítás</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function renderPendingLeaveRequests() {
+      const container = document.getElementById("leaveAdminList");
+      if (!container) return;
+
+      const { data, error } = await sb
+        .from("leave_requests")
+        .select("*")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = emptyMessage("Nem sikerült betölteni a szabadságkérelmeket.");
+        return;
+      }
+
+      if (!data.length) {
+        container.innerHTML = emptyMessage("Nincs függő szabadságkérelem.");
+        return;
+      }
+
+      const userMap = await getProfilesMapByIds(data.map(row => row.user_id));
+
+      container.innerHTML = data.map(row => {
+        const user = userMap[row.user_id];
+        return `
+          <div class="admin-card column-card">
+            <div class="admin-main">
+              <h3>${escapeHtml(displayUserName(user))}</h3>
+              <p>Időszak: ${escapeHtml(formatDateHu(row.start_date))} - ${escapeHtml(formatDateHu(row.end_date))}</p>
+              <p class="card-description">${escapeHtml(row.reason)}</p>
+            </div>
+            <div class="admin-badges">
+              <span class="badge yellow">Függőben</span>
+            </div>
+            <div class="action-buttons">
+              <button class="approve-btn" type="button" onclick="approveLeaveRequest(${row.id})">Elfogadás</button>
+              <button class="reject-btn" type="button" onclick="rejectLeaveRequest(${row.id})">Elutasítás</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function renderPendingDataChangeRequests() {
+      const container = document.getElementById("dataChangeAdminList");
+      if (!container) return;
+
+      const { data, error } = await sb
+        .from("data_change_requests")
+        .select("*")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = emptyMessage("Nem sikerült betölteni az adatváltoztatási igényeket.");
+        return;
+      }
+
+      if (!data.length) {
+        container.innerHTML = emptyMessage("Nincs függő adatváltoztatási igény.");
+        return;
+      }
+
+      const userMap = await getProfilesMapByIds(data.map(row => row.user_id));
+
+      container.innerHTML = data.map(row => {
+        const user = userMap[row.user_id];
+        return `
+          <div class="admin-card column-card">
+            <div class="admin-main">
+              <h3>${escapeHtml(displayUserName(user))}</h3>
+              <p>Módosítandó adat: ${escapeHtml(row.field_name)}</p>
+              <p class="card-description">Jelenlegi adat: ${escapeHtml(row.current_value || "-")} → Új adat: ${escapeHtml(row.requested_value)}</p>
+              <p class="card-description">Indoklás: ${escapeHtml(row.reason)}</p>
+            </div>
+            <div class="admin-badges">
+              <span class="badge yellow">Függőben</span>
+            </div>
+            <div class="action-buttons">
+              <button class="approve-btn" type="button" onclick="approveDataChangeRequest(${row.id})">Elfogadás</button>
+              <button class="reject-btn" type="button" onclick="rejectDataChangeRequest(${row.id})">Elutasítás</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function renderPendingRegistrations() {
+      const container = document.getElementById("registrationsList");
+      if (!container) return;
+
+      const { data, error } = await sb
+        .from("registration_requests")
+        .select("*")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = emptyMessage("Nem sikerült betölteni a regisztrációkat.");
+        return;
+      }
+
+      if (!data.length) {
+        container.innerHTML = emptyMessage("Nincs függő regisztráció.");
+        return;
+      }
+
+      container.innerHTML = data.map(row => `
+        <div class="admin-card row-card">
+          <div class="admin-main">
+            <h3>${escapeHtml(row.username)}</h3>
+            <p>Státusz: függőben • Beküldve: ${escapeHtml(formatDateTimeHu(row.created_at))}</p>
+          </div>
+          <div class="action-buttons">
+            <button class="approve-btn" type="button" onclick="approveRegistrationRequest(${row.id})">Jóváhagyás</button>
+            <button class="reject-btn" type="button" onclick="rejectRegistrationRequest(${row.id})">Elutasítás</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function loadArchiveSection(tableName, containerId, renderItem) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const { data, error } = await sb
+        .from(tableName)
+        .select("*")
+        .in("status", ["approved", "rejected"])
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = emptyMessage("Nem sikerült betölteni az archív elemeket.");
+        return;
+      }
+
+      if (!data.length) {
+        container.innerHTML = emptyMessage("Nincs lezárt elem.");
+        return;
+      }
+
+      const userIds = [];
+      const actorIds = [];
+
+      data.forEach(row => {
+        if (row.user_id) userIds.push(row.user_id);
+        if (row.approved_by) actorIds.push(row.approved_by);
+        if (row.rejected_by) actorIds.push(row.rejected_by);
+      });
+
+      const userMap = await getProfilesMapByIds(userIds);
+      const actorMap = await getProfilesMapByIds(actorIds);
+
+      container.innerHTML = data.map(row => renderItem(row, userMap, actorMap)).join("");
+    }
+
+    function archiveCardTemplate(title, subtitle, description, closedByText, closedAtText, status) {
+      return `
+        <div class="admin-card column-card">
+          <div class="admin-main">
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(subtitle)}</p>
+            <p class="card-description">${escapeHtml(description)}</p>
+            <p>Lezárta: ${escapeHtml(closedByText)}</p>
+            <p>Lezárás ideje: ${escapeHtml(closedAtText)}</p>
+          </div>
+          <div class="admin-badges">
+            <span class="badge ${statusBadgeClass(status)}">${statusTextHu(status)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadArchives() {
+      await loadArchiveSection("vehicle_requests", "archiveVehicleList", (row, userMap, actorMap) => {
+        const user = userMap[row.user_id];
+        const actor = actorMap[row.approved_by || row.rejected_by];
+        return archiveCardTemplate(
+          row.vehicle_type,
+          `Igényelte: ${displayUserName(user)}`,
+          row.reason,
+          displayUserName(actor),
+          formatDateTimeHu(row.approved_at || row.rejected_at),
+          row.status
+        );
+      });
+
+      await loadArchiveSection("leave_requests", "archiveLeaveList", (row, userMap, actorMap) => {
+        const user = userMap[row.user_id];
+        const actor = actorMap[row.approved_by || row.rejected_by];
+        return archiveCardTemplate(
+          "Szabadság kérelem",
+          `Igényelte: ${displayUserName(user)} • Időszak: ${formatDateHu(row.start_date)} - ${formatDateHu(row.end_date)}`,
+          row.reason,
+          displayUserName(actor),
+          formatDateTimeHu(row.approved_at || row.rejected_at),
+          row.status
+        );
+      });
+
+      await loadArchiveSection("data_change_requests", "archiveDataChangeList", (row, userMap, actorMap) => {
+        const user = userMap[row.user_id];
+        const actor = actorMap[row.approved_by || row.rejected_by];
+        return archiveCardTemplate(
+          `Adatváltoztatás - ${row.field_name}`,
+          `Igényelte: ${displayUserName(user)}`,
+          `Jelenlegi adat: ${row.current_value || "-"} → Új adat: ${row.requested_value}`,
+          displayUserName(actor),
+          formatDateTimeHu(row.approved_at || row.rejected_at),
+          row.status
+        );
+      });
+
+      await loadArchiveSection("reports", "archiveReportsList", (row, userMap, actorMap) => {
+        const user = userMap[row.user_id];
+        const actor = actorMap[row.approved_by || row.rejected_by];
+        return archiveCardTemplate(
+          row.report_type_name,
+          `Beküldte: ${displayUserName(user)}`,
+          row.description,
+          displayUserName(actor),
+          formatDateTimeHu(row.approved_at || row.rejected_at),
+          row.status
+        );
+      });
+
+      await loadArchiveSection("registration_requests", "archiveRegistrationsList", (row, _userMap, actorMap) => {
+        const actor = actorMap[row.approved_by || row.rejected_by];
+        return archiveCardTemplate(
+          row.username,
+          "Regisztráció típusa: Új felhasználó",
+          row.admin_note || "-",
+          displayUserName(actor),
+          formatDateTimeHu(row.approved_at || row.rejected_at),
+          row.status
+        );
+      });
+    }
+
+    async function approveServiceTime(id) {
+      const { error } = await sb
+        .from("service_times")
+        .update({
+          status: "approved",
+          approved_by: currentUser.id,
+          approved_at: new Date().toISOString(),
+          rejected_by: null,
+          rejected_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült jóváhagyni a szolgálati időt.");
+        return;
+      }
+
+      await renderPendingServiceTimes();
+      await loadArchives();
+    }
+
+    async function rejectServiceTime(id) {
+      const { error } = await sb
+        .from("service_times")
+        .update({
+          status: "rejected",
+          rejected_by: currentUser.id,
+          rejected_at: new Date().toISOString(),
+          approved_by: null,
+          approved_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elutasítani a szolgálati időt.");
+        return;
+      }
+
+      await renderPendingServiceTimes();
+      await loadArchives();
+    }
+
+    async function approveReport(id) {
+      const { data: report, error: readError } = await sb
+        .from("reports")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (readError || !report) {
+        console.error(readError);
+        alert("Nem sikerült beolvasni a jelentést.");
+        return;
+      }
+
+      const { error } = await sb
+        .from("reports")
+        .update({
+          status: "approved",
+          approved_by: currentUser.id,
+          approved_at: new Date().toISOString(),
+          rejected_by: null,
+          rejected_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült jóváhagyni a jelentést.");
+        return;
+      }
+
+      const { data: profile } = await sb
+        .from("profiles")
+        .select("plus_points, total_points")
+        .eq("id", report.user_id)
+        .single();
+
+      if (profile) {
+        await sb
+          .from("profiles")
+          .update({
+            plus_points: (profile.plus_points || 0) + (report.points_awarded || 0),
+            total_points: (profile.total_points || 0) + (report.points_awarded || 0)
+          })
+          .eq("id", report.user_id);
+      }
+
+      await renderPendingReports();
+      await loadArchives();
+      await loadFelhasznalok();
+      await loadUserEditorList();
+    }
+
+    async function rejectReport(id) {
+      const { error } = await sb
+        .from("reports")
+        .update({
+          status: "rejected",
+          rejected_by: currentUser.id,
+          rejected_at: new Date().toISOString(),
+          approved_by: null,
+          approved_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elutasítani a jelentést.");
+        return;
+      }
+
+      await renderPendingReports();
+      await loadArchives();
+    }
+
+    async function approveVehicleRequest(id) {
+      const { error } = await sb
+        .from("vehicle_requests")
+        .update({
+          status: "approved",
+          approved_by: currentUser.id,
+          approved_at: new Date().toISOString(),
+          rejected_by: null,
+          rejected_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült jóváhagyni a jármű igénylést.");
+        return;
+      }
+
+      await renderPendingVehicleRequests();
+      await loadArchives();
+    }
+
+    async function rejectVehicleRequest(id) {
+      const { error } = await sb
+        .from("vehicle_requests")
+        .update({
+          status: "rejected",
+          rejected_by: currentUser.id,
+          rejected_at: new Date().toISOString(),
+          approved_by: null,
+          approved_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elutasítani a jármű igénylést.");
+        return;
+      }
+
+      await renderPendingVehicleRequests();
+      await loadArchives();
+    }
+
+    async function approveLeaveRequest(id) {
+      const { error } = await sb
+        .from("leave_requests")
+        .update({
+          status: "approved",
+          approved_by: currentUser.id,
+          approved_at: new Date().toISOString(),
+          rejected_by: null,
+          rejected_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elfogadni a szabadságkérelmet.");
+        return;
+      }
+
+      await renderPendingLeaveRequests();
+      await loadArchives();
+    }
+
+    async function rejectLeaveRequest(id) {
+      const { error } = await sb
+        .from("leave_requests")
+        .update({
+          status: "rejected",
+          rejected_by: currentUser.id,
+          rejected_at: new Date().toISOString(),
+          approved_by: null,
+          approved_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elutasítani a szabadságkérelmet.");
+        return;
+      }
+
+      await renderPendingLeaveRequests();
+      await loadArchives();
+    }
+
+    function normalizeDataField(fieldName) {
+      const value = String(fieldName || "").trim().toLowerCase();
+      if (value === "név" || value === "nev") return "full_name";
+      if (value === "rendfokozat") return "rank";
+      if (value === "azonosító" || value === "azonosito") return "employee_id";
+      if (value === "beosztás" || value === "beosztas") return "position";
+      return null;
+    }
+
+    async function approveDataChangeRequest(id) {
+      const { data: requestRow, error: readError } = await sb
+        .from("data_change_requests")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (readError || !requestRow) {
+        console.error(readError);
+        alert("Nem sikerült beolvasni az adatváltoztatási igényt.");
+        return;
+      }
+
+      const profileField = normalizeDataField(requestRow.field_name);
+
+      if (profileField) {
+        const { error: profileError } = await sb
+          .from("profiles")
+          .update({
+            [profileField]: requestRow.requested_value
+          })
+          .eq("id", requestRow.user_id);
+
+        if (profileError) {
+          console.error(profileError);
+          alert("Nem sikerült módosítani a felhasználó profilját.");
+          return;
+        }
+      }
+
+      const { error } = await sb
+        .from("data_change_requests")
+        .update({
+          status: "approved",
+          approved_by: currentUser.id,
+          approved_at: new Date().toISOString(),
+          rejected_by: null,
+          rejected_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elfogadni az adatváltoztatási igényt.");
+        return;
+      }
+
+      await renderPendingDataChangeRequests();
+      await loadFelhasznalok();
+      await loadUserEditorList();
+      await loadArchives();
+    }
+
+    async function rejectDataChangeRequest(id) {
+      const { error } = await sb
+        .from("data_change_requests")
+        .update({
+          status: "rejected",
+          rejected_by: currentUser.id,
+          rejected_at: new Date().toISOString(),
+          approved_by: null,
+          approved_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elutasítani az adatváltoztatási igényt.");
+        return;
+      }
+
+      await renderPendingDataChangeRequests();
+      await loadArchives();
+    }
+
+    async function approveRegistrationRequest(id) {
+      const confirmed = confirm(
+        "Biztosan jóváhagyod ezt a regisztrációt?\n\n" +
+        "A felhasználót a Supabase Edge Function fogja létrehozni."
+      );
+
+      if (!confirmed) return;
+
+      const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+      const token = sessionData?.session?.access_token;
+
+      if (sessionError || !token) {
+        console.error(sessionError);
+        alert("Lejárt a munkamenet. Jelentkezz be újra.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      let response;
+      let result;
+
+      try {
+        response = await fetch(APPROVE_REGISTRATION_FUNCTION_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            request_id: id
+          })
+        });
+
+        const text = await response.text();
+
+        try {
+          result = JSON.parse(text);
+        } catch (jsonError) {
+          console.error("Edge Function nem JSON választ adott:", text);
+          alert("A jóváhagyó backend nem JSON választ adott. Nézd meg a Console-t.");
+          return;
+        }
+      } catch (fetchError) {
+        console.error(fetchError);
+        alert("Nem sikerült elérni a jóváhagyó backend funkciót.");
+        return;
+      }
+
+      if (!response.ok || !result.success) {
+        console.error("Jóváhagyási hiba:", result);
+        alert(result.message || "Nem sikerült jóváhagyni a regisztrációt.");
+        return;
+      }
+
+      alert(result.message || "Regisztráció jóváhagyva. A felhasználó most már be tud jelentkezni.");
+
+      await renderPendingRegistrations();
+      await loadFelhasznalok();
+      await loadUserEditorList();
+      await loadArchives();
+    }
+
+    async function rejectRegistrationRequest(id) {
+      const confirmed = confirm("Biztosan elutasítod ezt a regisztrációt?");
+      if (!confirmed) return;
+
+      const { error } = await sb
+        .from("registration_requests")
+        .update({
+          status: "rejected",
+          rejected_by: currentUser.id,
+          rejected_at: new Date().toISOString(),
+          approved_by: null,
+          approved_at: null
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        alert("Nem sikerült elutasítani a regisztrációt.");
+        return;
+      }
+
+      alert("Regisztráció elutasítva.");
+
+      await renderPendingRegistrations();
+      await loadArchives();
+    }
+
+    async function initAdminPage() {
+      const ok = await requireAdmin();
+      if (!ok) return;
+
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          await logout();
+        });
+      }
+
+      const backBtn = document.getElementById("backBtn");
+      if (backBtn) {
+        backBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          window.location.href = "fooldal.html";
+        });
+      }
+
+      await loadFelhasznalok();
+      await loadUserEditorList();
+      await renderPendingServiceTimes();
+      await renderPendingReports();
+      await renderPendingVehicleRequests();
+      await renderPendingLeaveRequests();
+      await renderPendingDataChangeRequests();
+      await renderPendingRegistrations();
+      await loadArchives();
+
+      const userSearch = document.getElementById("userSearch");
+      const userList = document.getElementById("userList");
+
+      if (userSearch && userList) {
+        userSearch.addEventListener("input", () => {
+          const value = userSearch.value.trim().toLowerCase();
+          const users = userList.querySelectorAll(".selectable-user");
+
+          users.forEach(user => {
+            const searchText = user.getAttribute("data-search") || "";
+            user.style.display = searchText.includes(value) ? "" : "none";
+          });
+        });
+      }
+    }
+
+    initAdminPage();
+  </script>
+
+</body>
+</html>

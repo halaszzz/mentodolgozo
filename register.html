@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEK - Regisztráció</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <div class="visual-side"></div>
+
+    <div class="form-side">
+      <div class="form-box">
+        <h1>Regisztráció</h1>
+        <p>A regisztráció admin jóváhagyás után aktiválódik.</p>
+
+        <form id="registerForm" autocomplete="off">
+          <div class="field">
+            <label for="username">Felhasználónév</label>
+            <input type="text" id="username" name="username" placeholder="Felhasználónév" required>
+          </div>
+
+          <div class="field">
+            <label for="password">Jelszó</label>
+            <input type="password" id="password" name="password" placeholder="Jelszó" required>
+          </div>
+
+          <button type="submit" class="submit-btn">Regisztráció</button>
+        </form>
+
+        <div class="footer-note">
+          <a href="index.html">Vissza a bejelentkezéshez</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "https://lsbdbfzeugqnurkmdhxh.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_GrhobqQt4uN4Cl5G9t1YmQ_KCKw-wFP";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function syntheticEmail(username) {
+    return username
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9._-]+/g, "") + "@tek.hu";
+  }
+
+  document.getElementById("registerForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const registerBtn = document.querySelector("#registerForm button[type='submit']");
+
+    if (!username || !password) {
+      alert("Tölts ki minden mezőt!");
+      return;
+    }
+
+    if (password.length < 6) {
+      alert("A jelszónak legalább 6 karakter hosszúnak kell lennie.");
+      return;
+    }
+
+    if (registerBtn) {
+      registerBtn.disabled = true;
+      registerBtn.textContent = "Küldés...";
+    }
+
+    const email = syntheticEmail(username);
+
+    const { error } = await sb
+      .from("registration_requests")
+      .insert({
+        username: username,
+        email: email,
+        password_hash: password,
+        status: "pending"
+      });
+
+    if (registerBtn) {
+      registerBtn.disabled = false;
+      registerBtn.textContent = "Regisztráció";
+    }
+
+    if (error) {
+      console.error("Regisztrációs kérelem hiba:", error);
+      alert("Nem sikerült elküldeni a regisztrációt: " + error.message);
+      return;
+    }
+
+    alert("Regisztráció elküldve! Admin jóváhagyásra vár.");
+    window.location.href = "index.html";
+  });
+</script>
+
+</body>
+</html>

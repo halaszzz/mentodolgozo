@@ -1,0 +1,206 @@
+:root{
+  --bg: #030508;
+  --panel: rgba(7, 10, 15, 0.42);
+  --panel-border: rgba(255,255,255,0.10);
+  --input-bg: rgba(255,255,255,0.045);
+  --input-border: rgba(255,255,255,0.13);
+  --text: #f5f7fb;
+  --muted: #7e8796;
+  --blue: #0f6cff;
+  --blue-hover: #1e78ff;
+  --shadow: 0 20px 60px rgba(0,0,0,0.38);
+  --glass-blur: blur(8px);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html, body{
+  width:100%;
+  height:100%;
+  font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  overflow:hidden;
+}
+
+body{
+  min-height:100vh;
+  background:
+    linear-gradient(rgba(0,0,0,0.58), rgba(0,0,0,0.58)),
+    url("./kepek/omszhatterkep.png") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-wrapper{
+  width:min(92%, 390px);
+  min-height: auto;
+  display:block;
+
+  /* ÁTLÁTSZÓ LOGIN DOBOZ */
+  background: rgba(7, 10, 15, 0.38);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 18px;
+  overflow:hidden;
+  box-shadow: var(--shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+
+  opacity: 0;
+  transform: translateY(32px) scale(0.985);
+  animation: loginFloatIn 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 1.5s;
+}
+
+/* Bal oldali szürke / képes rész kikapcsolva */
+.visual-side{
+  display:none;
+}
+
+.form-side{
+  /* Ugyanaz a fekete üveg hatás, csak nem tömör */
+  background: linear-gradient(180deg, rgba(7,10,15,0.30), rgba(2,3,6,0.36));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 42px 38px;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.form-box{
+  width:100%;
+  max-width:290px;
+}
+
+.form-box h1{
+  font-size: 2rem;
+  line-height:1.1;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing:-0.02em;
+}
+
+.form-box p{
+  font-size: .92rem;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.field{
+  margin-bottom: 16px;
+}
+
+.field label{
+  display:block;
+  font-size: .95rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #f2f5fa;
+}
+
+.field input{
+  width:100%;
+  height:48px;
+  border-radius: 10px;
+  border:1px solid var(--input-border);
+  background: rgba(255,255,255,0.045);
+  color:var(--text);
+  padding: 0 14px;
+  font-size: .98rem;
+  outline:none;
+  transition: .2s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.field input::placeholder{
+  color:#6e7685;
+}
+
+.field input:focus{
+  border-color: rgba(15,108,255,0.95);
+  box-shadow: 0 0 0 4px rgba(15,108,255,0.13);
+}
+
+/* EREDETI KÉK GOMB MEGTARTVA */
+.submit-btn{
+  width:100%;
+  height:48px;
+  border:none;
+  border-radius: 10px;
+  background: #0f6cff;
+  color:#fff;
+  font-size:1rem;
+  font-weight:800;
+  cursor:pointer;
+  margin-top: 10px;
+  transition: background .2s ease, transform .12s ease, box-shadow .2s ease;
+}
+
+.submit-btn:hover{
+  background: #1e78ff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15,108,255,0.3);
+}
+
+.submit-btn:active{
+  transform: translateY(1px);
+}
+
+.footer-note{
+  margin-top: 14px;
+  font-size: .8rem;
+  color: #626b7a;
+  text-align:center;
+}
+
+.footer-note a{
+  color: #8fb8ff;
+  text-decoration: none;
+}
+
+.footer-note a:hover{
+  text-decoration: underline;
+}
+
+@keyframes loginFloatIn{
+  from{
+    opacity: 0;
+    transform: translateY(32px) scale(0.985);
+    filter: blur(6px);
+  }
+
+  to{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 480px){
+  body{
+    padding: 14px;
+  }
+
+  .login-wrapper{
+    width:100%;
+  }
+
+  .form-side{
+    padding: 34px 24px;
+  }
+
+  .form-box{
+    max-width:100%;
+  }
+
+  .form-box h1{
+    font-size: 1.75rem;
+  }
+}
